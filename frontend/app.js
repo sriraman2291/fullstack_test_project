@@ -182,20 +182,44 @@ function validatePassword() {
   const password = regPass.value;
 
   const rules = {
-    len: password.length >= 8,
-    upper: /[A-Z]/.test(password),
-    lower: /[a-z]/.test(password),
-    num: /[0-9]/.test(password),
-    special: /[@#$!%*?&]/.test(password)
+    len: {
+      valid: password.length >= 8,
+      text: "At least 8 characters"
+    },
+    upper: {
+      valid: /[A-Z]/.test(password),
+      text: "One uppercase letter"
+    },
+    lower: {
+      valid: /[a-z]/.test(password),
+      text: "One lowercase letter"
+    },
+    num: {
+      valid: /[0-9]/.test(password),
+      text: "One number"
+    },
+    special: {
+      valid: /[@#$!%*?&]/.test(password),
+      text: "One special character"
+    }
   };
+
+  let allValid = true;
 
   Object.keys(rules).forEach(id => {
     const el = document.getElementById(id);
-    el.className = rules[id] ? "valid" : "invalid";
-    el.innerText = (rules[id] ? "✔ " : "❌ ") + el.innerText.slice(2);
+
+    if (rules[id].valid) {
+      el.className = "valid";
+      el.innerText = "✔ " + rules[id].text;
+    } else {
+      el.className = "invalid";
+      el.innerText = "❌ " + rules[id].text;
+      allValid = false;
+    }
   });
 
-  registerBtn.disabled = !Object.values(rules).every(Boolean);
+  registerBtn.disabled = !allValid;
 }
 
 /* =========================
