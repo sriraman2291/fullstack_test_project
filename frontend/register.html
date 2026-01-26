@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Register</h2>
+
+    <input id="regUser" placeholder="Username">
+
+  <div class="password-box">
+    <input id="loginPass" type="password" placeholder="Password">
+    <span class="eye" data-target="loginPass"></span>
+  </div>
+
+  <ul id="rules" style="font-size:13px; padding-left:18px;">
+    <li id="len">❌ At least 8 characters</li>
+    <li id="upper">❌ One uppercase letter</li>
+    <li id="lower">❌ One lowercase letter</li>
+    <li id="num">❌ One number</li>
+    <li id="special">❌ One special character</li>
+  </ul>
+
+  <button id="registerBtn" onclick="register()" disabled>Register</button>
+
+  <div id="msg" class="message"></div>
+
+    <p style="text-align:center; margin-top:15px;">
+      Already have an account?
+      <a href="index.html">Login</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    redirectIfLoggedIn();
+  </script>
+
+</body>
+</html>

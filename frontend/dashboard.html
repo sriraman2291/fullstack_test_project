@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="dashboard">
+    <h2>Dashboard</h2>
+
+    <button onclick="getProfile()">Get Profile</button>
+    <button onclick="logout()">Logout</button>
+    <button onclick="deleteUser()">Delete Account</button>
+
+    <pre id="output"></pre>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    protectRoute();
+  </script>
+
+</body>
+</html>

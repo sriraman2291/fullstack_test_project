@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Login</h2>
+
+    <input id="loginUser" placeholder="Username">
+    <div class="password-box">
+      <input id="loginPass" type="password" placeholder="Password">
+      <span class="eye" data-target="loginPass"></span>
+    </div>
+
+
+
+
+    <button onclick="login()">Login</button>
+
+    <div id="msg" class="message"></div>
+
+    <p style="text-align:center; margin-top:15px;">
+      New user?
+      <a href="register.html">Create an account</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+
+  <script>
+    redirectIfLoggedIn();
+  </script>
+
+</body>
+</html>
