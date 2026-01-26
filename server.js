@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const User = require("./models/User");
 require("dotenv").config();
 
-const express = require("express");
 const app = express();
 
 app.use(express.json());   // ✅ REQUIRED
@@ -48,7 +47,7 @@ mongoose.connect(process.env.MONGO_URL)
    LOGIN API
 ========================= */
 app.post("/api/login", async (req, res) => {
-  
+
   console.log("LOGIN BODY:", req.body);
 
   const { username, password } = req.body;
@@ -56,7 +55,7 @@ app.post("/api/login", async (req, res) => {
   const user = await User.findOne({ username });
 
   console.log("USER FOUND:", user?._id);
-
+  
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
