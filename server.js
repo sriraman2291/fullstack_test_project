@@ -7,8 +7,11 @@ const bcrypt = require("bcrypt");
 const User = require("./models/User");
 require("dotenv").config();
 
-
+const express = require("express");
 const app = express();
+
+app.use(express.json());   // ✅ REQUIRED
+
 app.use(cors({
   origin: [
     "http://localhost:5500",
@@ -18,11 +21,14 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
 
 // 🔐 Secrets (use .env in real projects)
 const ACCESS_SECRET = process.env.ACCESS_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
+
+if (!ACCESS_SECRET || !REFRESH_SECRET) {
+  throw new Error("JWT secrets missing");
+}
 
 
 // 👤 Dummy user
@@ -42,9 +48,15 @@ mongoose.connect(process.env.MONGO_URL)
    LOGIN API
 ========================= */
 app.post("/api/login", async (req, res) => {
+  
+  console.log("LOGIN BODY:", req.body);
+
   const { username, password } = req.body;
 
   const user = await User.findOne({ username });
+
+  console.log("USER FOUND:", user?._id);
+
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
