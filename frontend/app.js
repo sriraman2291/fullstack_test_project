@@ -1,4 +1,5 @@
-const API = "http://localhost:3000";
+const API = "https://fullstack-test-project.onrender.com";
+
 
 function isLoggedIn() {
   return !!localStorage.getItem("accessToken");
