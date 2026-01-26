@@ -1,5 +1,18 @@
 const API = "https://fullstack-test-project.onrender.com";
 
+let regPass;
+let registerBtn;
+
+document.addEventListener("DOMContentLoaded", () => {
+  regPass = document.getElementById("reg-password");
+  registerBtn = document.getElementById("registerBtn");
+
+  if (regPass) {
+    regPass.addEventListener("input", validatePassword);
+  }
+});
+
+
 
 function isLoggedIn() {
   return !!localStorage.getItem("accessToken");
