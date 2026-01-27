@@ -1,5 +1,21 @@
 const API = "https://fullstack-test-project.onrender.com";
 
+//loading spinner
+function showLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) {
+    loader.classList.remove("hidden");
+  }
+}
+
+function hideLoader() {
+  const loader = document.getElementById("loader");
+  if (loader) {
+    loader.classList.add("hidden");
+  }
+}
+
+
 let regPass;
 let registerBtn;
 
@@ -11,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     regPass.addEventListener("input", validatePassword);
   }
 });
-
 
 
 function isLoggedIn() {
@@ -37,31 +52,37 @@ function redirectIfLoggedIn() {
 
 // Centralized fetch with auto-refresh
 async function fetchWithAuth(url, options = {}) {
-  let accessToken = localStorage.getItem("accessToken");
+  showLoader(); // 👈 START loading
 
-  options.headers = {
-    ...options.headers,
-    Authorization: `Bearer ${accessToken}`
-  };
+  try {
+    let accessToken = localStorage.getItem("accessToken");
 
-  let response = await fetch(url, options);
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${accessToken}`
+    };
 
-  // If access token expired
-  if (response.status === 401 || response.status === 403) {
-    const refreshed = await refreshAccessToken();
+    let response = await fetch(url, options);
 
-    if (!refreshed) {
-      logoutAndRedirect();
-      return null;
+    // If access token expired
+    if (response.status === 401 || response.status === 403) {
+      const refreshed = await refreshAccessToken();
+
+      if (!refreshed) {
+        logoutAndRedirect();
+        return null;
+      }
+
+      // Retry original request with new token
+      accessToken = localStorage.getItem("accessToken");
+      options.headers.Authorization = `Bearer ${accessToken}`;
+      response = await fetch(url, options);
     }
 
-    // Retry original request
-    accessToken = localStorage.getItem("accessToken");
-    options.headers.Authorization = `Bearer ${accessToken}`;
-    response = await fetch(url, options);
+    return response;
+  } finally {
+    hideLoader(); // 👈 STOP loading (always)
   }
-
-  return response;
 }
 
 // Refresh access token
@@ -96,53 +117,63 @@ function logoutAndRedirect() {
 
 // Register
 async function register() {
-  if (registerBtn.disabled) {
-    msg.className = "message error";
-    msg.innerText = "Password does not meet requirements";
-    return;
-  }
+  showLoader();
 
-  const res = await fetch(`${API}/api/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: regUser.value,
-      password: regPass.value
-    })
-  });
+  try {
+    const res = await fetch(`${API}/api/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: regUser.value,
+        password: regPass.value
+      })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (res.ok) {
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+
     msg.className = "message success";
-    msg.innerText = data.message;
-    setTimeout(() => window.location = "index.html", 1500);
-  } else {
+    msg.innerText = "Registered successfully. Please login.";
+  } catch (err) {
     msg.className = "message error";
-    msg.innerText = data.message;
+    msg.innerText = err.message;
+  } finally {
+    hideLoader();
   }
 }
 
 // Login
 async function login() {
-  const res = await fetch(`${API}/api/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: loginUser.value,
-      password: loginPass.value
-    })
-  });
+  showLoader();
 
-  const data = await res.json();
+  try {
+    const res = await fetch(`${API}/api/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: loginUser.value,
+        password: loginPass.value
+      })
+    });
 
-  if (res.ok) {
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
+
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("refreshToken", data.refreshToken);
-    window.location = "dashboard.html";
-  } else {
+
+    window.location.href = "dashboard.html";
+  } catch (err) {
     msg.className = "message error";
-    msg.innerText = data.message;
+    msg.innerText = err.message;
+  } finally {
+    hideLoader();
   }
 }
 
