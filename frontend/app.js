@@ -1,4 +1,4 @@
-const API = "https://fullstack-test-project.onrender.com";
+const API = "https://fullstack-test-project.onrender.com/api";
 
 //loading spinner
 function showLoader() {
@@ -90,7 +90,7 @@ async function refreshAccessToken() {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) return false;
 
-  const res = await fetch(`${API}/api/refresh-token`, {
+  const res = await fetch(`${API}/refresh-token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refreshToken })
@@ -120,7 +120,7 @@ async function register() {
   showLoader();
 
   try {
-    const res = await fetch(`${API}/api/register`, {
+    const res = await fetch(`${API}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -150,7 +150,7 @@ async function login() {
   showLoader();
 
   try {
-    const res = await fetch(`${API}/api/login`, {
+    const res = await fetch(`${API}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -179,7 +179,7 @@ async function login() {
 
 // Logout
 async function logout() {
-  await fetch("https://fullstack-test-project.onrender.com/api/logout", {
+  await fetch(`${API}/logout`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -213,16 +213,14 @@ async function getProfile() {
     `;
   } catch (err) {
     console.error(err);
-  } finally {
-    hideLoader();
-  }
+  } 
 }
 
 
 
 // Delete user
 async function deleteUser() {
-  const res = await fetchWithAuth(`${API}/api/user`, {
+  const res = await fetchWithAuth(`${API}/user`, {
     method: "DELETE"
   });
 
