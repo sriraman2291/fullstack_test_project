@@ -196,25 +196,26 @@ async function logout() {
 
 // Get profile
 async function getProfile() {
-  showLoader();
-
   try {
-    const res = await fetchWithAuth(API + "/profile");
-
+    const res = await fetchWithAuth(`${API}/profile`);
     if (!res) return;
 
-    const data = await res.json(); // 🔥 THIS WAS MISSING
-
+    const data = await res.json();
     console.log("PROFILE DATA:", data);
 
-    document.getElementById("profileBox").innerHTML = `
+    const box = document.getElementById("profileBox");
+
+    box.innerHTML = `
       <p><strong>Username:</strong> ${data.username}</p>
-      <p><strong>User ID:</strong> ${data.userId}</p>
+      <p><strong>User ID:</strong> ${data._id}</p>
     `;
+
+    box.classList.remove("hidden"); // 👈 show ONLY here
   } catch (err) {
     console.error(err);
-  } 
+  }
 }
+
 
 
 
