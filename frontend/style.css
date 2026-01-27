@@ -184,3 +184,12 @@ input[type="password"]::-webkit-textfield-decoration-container {
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+
+.profile-box {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f5f7fb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+

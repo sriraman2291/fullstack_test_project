@@ -198,17 +198,26 @@ async function logout() {
 async function getProfile() {
   showLoader();
 
-  const response = await fetchWithAuth(
-    "https://fullstack-test-project.onrender.com/api/profile"
-  );
+  try {
+    const res = await fetchWithAuth(API + "/profile");
 
-  hideLoader();
+    if (!res) return;
 
-  if (!response) return;
+    const data = await res.json(); // 🔥 THIS WAS MISSING
 
-  const data = await response.json();
-  document.getElementById("username").innerText = data.username;
+    console.log("PROFILE DATA:", data);
+
+    document.getElementById("profileBox").innerHTML = `
+      <p><strong>Username:</strong> ${data.username}</p>
+      <p><strong>User ID:</strong> ${data.userId}</p>
+    `;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideLoader();
+  }
 }
+
 
 
 // Delete user
