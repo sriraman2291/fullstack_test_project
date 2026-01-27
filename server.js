@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const RefreshToken = require("./models/RefreshToken");
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const app = express();
