@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const RefreshToken = require("./models/RefreshToken");
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const app = express();
@@ -131,11 +132,11 @@ app.post("/api/refresh-token", async (req, res) => {
 ========================= */
 app.post("/api/logout", async (req, res) => {
   const { refreshToken } = req.body;
-  if (!refreshToken) return res.sendStatus(400);
 
   await RefreshToken.deleteOne({ token: refreshToken });
-  res.json({ message: "Logged out successfully" });
+  res.json({ message: "Logged out" });
 });
+
 
 /* =========================
    ACCESS TOKEN VERIFY
@@ -155,11 +156,14 @@ function verifyAccessToken(req, res, next) {
 /* =========================
    PROTECTED API
 ========================= */
-app.get("/api/profile", verifyAccessToken, (req, res) => {
-  res.json({
-    message: "Profile data",
-    userId: req.user.userId
-  });
+app.get("/api/profile", authMiddleware, async (req, res) => {
+  const user = await User.findById(req.userId).select("-password");
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json(user);
 });
 
 // 🚀 Start server
@@ -233,3 +237,22 @@ app.delete("/api/user", verifyAccessToken, async (req, res) => {
     });
   }
 });
+
+
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Invalid token" });
+  }
+}

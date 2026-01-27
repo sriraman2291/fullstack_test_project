@@ -179,29 +179,37 @@ async function login() {
 
 // Logout
 async function logout() {
-  const refreshToken = localStorage.getItem("refreshToken");
-
-  await fetch(`${API}/api/logout`, {
+  await fetch("https://fullstack-test-project.onrender.com/api/logout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken })
+    body: JSON.stringify({
+      refreshToken: localStorage.getItem("refreshToken")
+    })
   });
 
-  logoutAndRedirect();
+  localStorage.clear();
+  window.location.href = "index.html";
 }
-
 /* =========================
    PROTECTED APIs
 ========================= */
 
 // Get profile
 async function getProfile() {
-  const res = await fetchWithAuth(`${API}/api/profile`);
-  if (!res) return;
+  showLoader();
 
-  const data = await res.json();
-  output.innerText = JSON.stringify(data, null, 2);
+  const response = await fetchWithAuth(
+    "https://fullstack-test-project.onrender.com/api/profile"
+  );
+
+  hideLoader();
+
+  if (!response) return;
+
+  const data = await response.json();
+  document.getElementById("username").innerText = data.username;
 }
+
 
 // Delete user
 async function deleteUser() {
