@@ -196,6 +196,12 @@ async function logout() {
 
 // Get profile
 async function getProfile() {
+  const btn = document.getElementById("profileBtn");
+  const box = document.getElementById("profileBox");
+
+  btn.disabled = true;
+  btn.innerText = "Loading...";
+
   try {
     const res = await fetchWithAuth(`${API}/profile`);
     if (!res) return;
@@ -203,16 +209,19 @@ async function getProfile() {
     const data = await res.json();
     console.log("PROFILE DATA:", data);
 
-    const box = document.getElementById("profileBox");
-
     box.innerHTML = `
       <p><strong>Username:</strong> ${data.username}</p>
       <p><strong>User ID:</strong> ${data._id}</p>
+      <p><strong>Created:</strong> ${new Date(data.createdAt).toLocaleString()}</p>
     `;
 
-    box.classList.remove("hidden"); // 👈 show ONLY here
+    box.classList.remove("hidden");
+    requestAnimationFrame(() => box.classList.add("show")); // 👈 animation
   } catch (err) {
-    console.error(err);
+    alert("Failed to load profile");
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Get Profile";
   }
 }
 

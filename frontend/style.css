@@ -197,4 +197,22 @@ input[type="password"]::-webkit-textfield-decoration-container {
 .hidden {
   display: none;
 }
+.profile {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.profile.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none;
+}
 
